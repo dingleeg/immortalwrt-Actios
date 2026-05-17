@@ -1,4 +1,4 @@
-name: 📄 Deploy GitHub Pages
+name: 🌐 web云编译页面
 
 on:
   push:
@@ -18,22 +18,23 @@ concurrency:
 
 jobs:
   deploy:
+    name: 发布页面
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 拉取仓库代码
         uses: actions/checkout@v4
 
-      - name: Setup Pages
+      - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload artifact
+      - name: 上传 docs 目录
         uses: actions/upload-pages-artifact@v3
         with:
           path: './docs'
 
-      - name: Deploy to GitHub Pages
+      - name: 部署到 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
