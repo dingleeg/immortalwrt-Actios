@@ -219,11 +219,11 @@ const PLUGIN_CATEGORIES = [
       { pkg: "luci-app-passwall",  hot: true,  name: "PassWall",    icon: "🧱", desc: { zh: "多协议代理工具",        en: "Multi-protocol proxy" } },
       { pkg: "luci-app-passwall2",             name: "PassWall2",   icon: "🧱", desc: { zh: "PassWall 第二版",       en: "PassWall v2" } },
       { pkg: "luci-app-ssr-plus",  hot: true,  name: "SSR Plus+",   icon: "✈️", desc: { zh: "ShadowSocksR 增强版",  en: "ShadowSocksR enhanced" } },
-      { pkg: "luci-app-vssr",                  name: "VSSR",        icon: "🔀", desc: { zh: "V2Ray/Xray 代理",      en: "V2Ray/Xray proxy" } },
+      { pkg: "luci-app-vssr",      warn: true,          name: "VSSR",        icon: "🔀", desc: { zh: "V2Ray/Xray 代理",      en: "V2Ray/Xray proxy" } },
       { pkg: "luci-app-mihomo",                name: "Mihomo",      icon: "🐱", desc: { zh: "Mihomo 代理内核",      en: "Mihomo proxy core" } },
       { pkg: "luci-app-helloworld",            name: "Hello World", icon: "🌍", desc: { zh: "多协议代理客户端",     en: "Multi-protocol proxy" } },
       { pkg: "luci-app-xray",                  name: "Xray",        icon: "🔀", desc: { zh: "Xray 代理内核",        en: "Xray proxy core" } },
-      { pkg: "luci-app-vpnbypass",             name: "VPN 绕过",    icon: "🔀", desc: { zh: "VPN 分流绕过",         en: "VPN bypass" } },
+      { pkg: "luci-app-vpnbypass", warn: true,          name: "VPN 绕过",    icon: "🔀", desc: { zh: "VPN 分流绕过",         en: "VPN bypass" } },
     ]
   },
   {
@@ -233,16 +233,16 @@ const PLUGIN_CATEGORIES = [
       { pkg: "luci-app-mosdns",                name: "MosDNS",        icon: "🔍", desc: { zh: "DNS 分流与过滤",       en: "DNS routing & filter" } },
       { pkg: "luci-app-adguardhome", hot: true, name: "AdGuard Home", icon: "🛡️", desc: { zh: "全网广告/追踪拦截",   en: "Full ad & tracker block" } },
       { pkg: "luci-app-dnsforwarder",           name: "DNS Forwarder", icon: "🔍", desc: { zh: "DNS 转发器",           en: "DNS forwarder" } },
-      { pkg: "luci-app-dns-filter",             name: "DNS 过滤器",    icon: "🔍", desc: { zh: "DNS 层广告过滤",       en: "DNS-level ad filter" } },
+      { pkg: "luci-app-dnsfilter",              name: "DNS 过滤器",    icon: "🔍", desc: { zh: "DNS 层广告过滤",       en: "DNS-level ad filter" } },
     ]
   },
   {
     titleKey: "cat_adblock",
     plugins: [
-      { pkg: "luci-app-adbyby-plus",  name: "AdByby Plus+",   icon: "🚫", desc: { zh: "广告过滤（视频广告）", en: "Ad filter (video ads)" } },
+      { pkg: "luci-app-adbyby-plus",  warn: true, name: "AdByby Plus+",   icon: "🚫", desc: { zh: "广告过滤（视频广告）", en: "Ad filter (video ads)" } },
       { pkg: "luci-app-adblock",      name: "AdBlock",        icon: "🚫", desc: { zh: "DNS 广告过滤",         en: "DNS ad blocking" } },
       { pkg: "luci-app-ikoolproxy",   name: "iKoolProxy",     icon: "🚫", desc: { zh: "滤广告",               en: "Ad filter" } },
-      { pkg: "luci-app-adblock-plus", name: "广告屏蔽大师+",  icon: "🚫", desc: { zh: "广告屏蔽大师 Plus+",  en: "Ad blocker Plus+" } },
+      { pkg: "luci-app-adblock-plus", warn: true, name: "广告屏蔽大师+",  icon: "🚫", desc: { zh: "广告屏蔽大师 Plus+",  en: "Ad blocker Plus+" } },
     ]
   },
   {
@@ -261,10 +261,10 @@ const PLUGIN_CATEGORIES = [
       { pkg: "luci-app-turboacc", hot: true, warn: true, name: "Turbo ACC",  icon: "🚀", desc: { zh: "软件流量加速",         en: "Software traffic acceleration" } },
       { pkg: "kmod-tcp-bbr",      hot: true,             name: "BBR",        icon: "🚀", desc: { zh: "TCP BBR 拥塞控制",     en: "TCP BBR congestion control" } },
       { pkg: "luci-app-qos",                             name: "QoS",        icon: "⚖️", desc: { zh: "服务质量流量控制",     en: "Quality of Service" } },
-      { pkg: "luci-app-nft-qos",                         name: "QoS Nftables",icon: "⚖️",desc: { zh: "Nftables 版流量控制", en: "Nftables QoS" } },
+      { pkg: "luci-app-nft-qos",   warn: true,                    name: "QoS Nftables",icon: "⚖️",desc: { zh: "Nftables 版流量控制", en: "Nftables QoS" } },
       { pkg: "luci-app-sqm",                             name: "SQM QoS",    icon: "⚖️", desc: { zh: "智能队列管理 QoS",    en: "Smart Queue Management" } },
-      { pkg: "luci-app-ipspeed",                         name: "IP 限速",    icon: "⚖️", desc: { zh: "按 IP 限制网速",      en: "Per-IP speed limit" } },
-      { pkg: "luci-app-autospeed",                       name: "定时限速",   icon: "⏰", desc: { zh: "定时自动限速",         en: "Scheduled speed limit" } },
+      { pkg: "luci-app-ipspeed",   warn: true,                        name: "IP 限速",    icon: "⚖️", desc: { zh: "按 IP 限制网速",      en: "Per-IP speed limit" } },
+      { pkg: "luci-app-autospeed", warn: true,                       name: "定时限速",   icon: "⏰", desc: { zh: "定时自动限速",         en: "Scheduled speed limit" } },
       { pkg: "luci-app-mwan3",                           name: "MWAN3 分流", icon: "🔀", desc: { zh: "多线多拨负载均衡",     en: "Multi-WAN load balance" } },
     ]
   },
@@ -273,12 +273,12 @@ const PLUGIN_CATEGORIES = [
     plugins: [
       { pkg: "luci-app-ttyd",      hot: true, name: "TTYD 终端",    icon: "💻", desc: { zh: "网页版 SSH 终端",       en: "Web SSH terminal" } },
       { pkg: "luci-app-filebrowser",          name: "FileBrowser",  icon: "📁", desc: { zh: "网页文件管理",          en: "Web file manager" } },
-      { pkg: "luci-app-filetransfer",         name: "文件传输",     icon: "📤", desc: { zh: "文件上传下载",          en: "File transfer" } },
+      { pkg: "luci-app-filetransfer", warn: true,        name: "文件传输",     icon: "📤", desc: { zh: "文件上传下载",          en: "File transfer" } },
       { pkg: "luci-app-diskman",   hot: true, name: "磁盘管理",     icon: "💾", desc: { zh: "硬盘分区挂载管理",      en: "Disk partition manager" } },
       { pkg: "luci-app-partexp",              name: "分区扩容",     icon: "💾", desc: { zh: "根分区在线扩容",        en: "Partition expansion" } },
       { pkg: "luci-app-crontabs",             name: "计划任务",     icon: "⏰", desc: { zh: "定时任务管理",          en: "Scheduled tasks" } },
-      { pkg: "luci-app-log",                  name: "系统日志",     icon: "📋", desc: { zh: "查看系统运行日志",      en: "System log viewer" } },
-      { pkg: "luci-app-cpu-perf",             name: "CPU 性能",     icon: "⚡", desc: { zh: "CPU 频率调节",          en: "CPU frequency tuning" } },
+      { pkg: "luci-app-log",          warn: true,         name: "系统日志",     icon: "📋", desc: { zh: "查看系统运行日志",      en: "System log viewer" } },
+      { pkg: "luci-app-cpufreq",              name: "CPU 性能",     icon: "⚡", desc: { zh: "CPU 频率调节",          en: "CPU frequency tuning" } },
       { pkg: "luci-app-autoreboot",hot: true, name: "定时重启",     icon: "🔄", desc: { zh: "定时自动重启路由器",    en: "Scheduled reboot" } },
       { pkg: "luci-app-poweroff",             name: "关机",         icon: "⏻",  desc: { zh: "一键关机",              en: "System shutdown" } },
       { pkg: "luci-app-ramfree",              name: "释放内存",     icon: "🧹", desc: { zh: "一键释放系统内存",      en: "Free RAM" } },
@@ -289,7 +289,7 @@ const PLUGIN_CATEGORIES = [
       { pkg: "luci-app-advanced",             name: "高级设置",     icon: "⚙️", desc: { zh: "系统高级配置选项",      en: "Advanced settings" } },
       { pkg: "luci-app-uhttpd",               name: "uHTTPd",       icon: "🌐", desc: { zh: "Web 服务器配置",        en: "uHTTPd web server" } },
       { pkg: "luci-app-acme",                 name: "ACME 证书",    icon: "🔐", desc: { zh: "自动申请 SSL 证书",     en: "ACME SSL certificate" } },
-      { pkg: "luci-app-wizard",               name: "网络向导",     icon: "🧙", desc: { zh: "网络配置向导",          en: "Network setup wizard" } },
+      { pkg: "luci-app-wizard",       warn: true,         name: "网络向导",     icon: "🧙", desc: { zh: "网络配置向导",          en: "Network setup wizard" } },
       { pkg: "luci-app-vlmcsd",               name: "KMS 服务器",   icon: "🔑", desc: { zh: "Windows KMS 激活服务",  en: "KMS activation server" } },
       { pkg: "luci-app-chatgpt-web",          name: "ChatGPT Web",  icon: "🤖", desc: { zh: "ChatGPT 网页客户端",    en: "ChatGPT web client" } },
     ]
@@ -309,7 +309,7 @@ const PLUGIN_CATEGORIES = [
       { pkg: "luci-app-socat",                name: "Socat",        icon: "🔌", desc: { zh: "端口转发工具",       en: "Port forwarding" } },
       { pkg: "luci-app-macvlan",              name: "Macvlan",      icon: "🔌", desc: { zh: "Macvlan 网络接口",   en: "Macvlan interface" } },
       { pkg: "luci-app-mentohust",            name: "MentoHUST",    icon: "🔑", desc: { zh: "华为 802.1X 认证",   en: "Huawei 802.1X auth" } },
-      { pkg: "luci-app-iptv-helper",          name: "IPTV 帮手",    icon: "📺", desc: { zh: "IPTV 组播代理",      en: "IPTV multicast proxy" } },
+      { pkg: "luci-app-iptvhelper",           name: "IPTV 帮手",    icon: "📺", desc: { zh: "IPTV 组播代理",      en: "IPTV multicast proxy" } },
       { pkg: "luci-app-udpxy",                name: "udpxy",        icon: "📺", desc: { zh: "组播转 HTTP 代理",   en: "Multicast to HTTP" } },
       { pkg: "luci-app-tinyproxy",            name: "Tinyproxy",    icon: "🔌", desc: { zh: "轻量 HTTP 代理",     en: "Lightweight HTTP proxy" } },
       { pkg: "luci-app-polipo",  warn: true,  name: "Polipo",       icon: "🔌", desc: { zh: "HTTP 缓存代理",      en: "HTTP caching proxy" } },
@@ -320,9 +320,9 @@ const PLUGIN_CATEGORIES = [
   {
     titleKey: "cat_vpn",
     plugins: [
-      { pkg: "luci-app-wireguard",  hot: true, name: "WireGuard",      icon: "🔒", desc: { zh: "高性能 VPN 隧道",   en: "High-perf VPN tunnel" } },
+      { pkg: "luci-app-wireguard",  hot: true, warn: true, name: "WireGuard",      icon: "🔒", desc: { zh: "高性能 VPN 隧道（需 kmod-wireguard）",   en: "High-perf VPN tunnel (needs kmod-wireguard)" } },
       { pkg: "luci-app-softethervpn",          name: "SoftEther VPN",  icon: "🔒", desc: { zh: "多协议 VPN 服务",   en: "Multi-protocol VPN" } },
-      { pkg: "luci-app-openvpn",               name: "OpenVPN 服务端", icon: "🔒", desc: { zh: "OpenVPN 服务器",    en: "OpenVPN server" } },
+      { pkg: "luci-app-openvpn",  warn: true,      name: "OpenVPN 服务端", icon: "🔒", desc: { zh: "OpenVPN 服务器",    en: "OpenVPN server" } },
       { pkg: "luci-app-openvpn-server",        name: "OpenVPN 客户端", icon: "🔒", desc: { zh: "OpenVPN 客户端",    en: "OpenVPN client" } },
       { pkg: "luci-app-pptp-server",           name: "PPTP VPN",       icon: "🔒", desc: { zh: "PPTP VPN 服务器",   en: "PPTP VPN server" } },
       { pkg: "luci-app-ipsec-server",          name: "IPSec VPN",      icon: "🔒", desc: { zh: "IPSec VPN 服务器",  en: "IPSec VPN server" } },
@@ -347,16 +347,16 @@ const PLUGIN_CATEGORIES = [
       { pkg: "luci-app-sms-tool", hot: true,       name: "SMS Tool",         icon: "📨", desc: { zh: "收发短信管理",           en: "SMS management" } },
       { pkg: "luci-app-3ginfo-lite", hot: true,    name: "3G/4G 信息",       icon: "📶", desc: { zh: "移动网络信号状态",       en: "Mobile signal status" } },
       { pkg: "luci-app-modemband", hot: true,      name: "频段锁定",         icon: "📡", desc: { zh: "锁定 4G/5G 频段",        en: "Lock 4G/5G band" } },
-      { pkg: "luci-app-mmconfig",       name: "ModemManager",     icon: "📡", desc: { zh: "调制解调器配置",         en: "Modem configuration" } },
+      { pkg: "luci-app-mmconfig",  warn: true,    name: "ModemManager",     icon: "📡", desc: { zh: "调制解调器配置",         en: "Modem configuration" } },
     ]
   },
   {
     titleKey: "cat_theme",
     plugins: [
       { pkg: "luci-theme-argon",        name: "Argon",            icon: "🎨", desc: { zh: "精美主题（默认已含）",   en: "Beautiful theme (default)" } },
-      { pkg: "luci-theme-material",     name: "Material",         icon: "🎨", desc: { zh: "Material Design 风格",   en: "Material Design style" } },
-      { pkg: "luci-theme-neobird",      name: "NeoBird",          icon: "🎨", desc: { zh: "简洁深色主题",           en: "Clean dark theme" } },
-      { pkg: "luci-theme-kucat",        name: "KuCat",            icon: "🎨", desc: { zh: "KuCat 主题",             en: "KuCat theme" } },
+      { pkg: "luci-theme-material", warn: true,    name: "Material",         icon: "🎨", desc: { zh: "Material Design 风格",   en: "Material Design style" } },
+      { pkg: "luci-theme-neobird",  warn: true,   name: "NeoBird",          icon: "🎨", desc: { zh: "简洁深色主题",           en: "Clean dark theme" } },
+      { pkg: "luci-theme-kucat",    warn: true,   name: "KuCat",            icon: "🎨", desc: { zh: "KuCat 主题",             en: "KuCat theme" } },
       { pkg: "luci-app-argon-config", hot: true,   name: "Argon 主题设置",   icon: "🎨", desc: { zh: "Argon 主题配置面板",     en: "Argon theme settings" } },
       { pkg: "luci-app-design-config",  name: "Design 主题设置",  icon: "🎨", desc: { zh: "Design 主题配置面板",    en: "Design theme settings" } },
     ]
@@ -390,8 +390,8 @@ const PLUGIN_CATEGORIES = [
   {
     titleKey: "cat_access",
     plugins: [
-      { pkg: "luci-app-accesscontrol", hot: true,  name: "上网时间控制",     icon: "⏱️", desc: { zh: "按设备限制上网时间",     en: "Per-device time control" } },
-      { pkg: "luci-app-parentalctl",    name: "家长控制",         icon: "👨‍👩‍👧", desc: { zh: "儿童上网内容过滤",       en: "Parental content filter" } },
+      { pkg: "luci-app-accesscontrol", hot: true, warn: true, name: "上网时间控制",     icon: "⏱️", desc: { zh: "按设备限制上网时间",     en: "Per-device time control" } },
+      { pkg: "luci-app-parentalctl",  warn: true,  name: "家长控制",         icon: "👨‍👩‍👧", desc: { zh: "儿童上网内容过滤",       en: "Parental content filter" } },
       { pkg: "luci-app-banip",          name: "BanIP",            icon: "🚷", desc: { zh: "IP 黑名单封锁",          en: "IP blacklist blocking" } },
       { pkg: "luci-app-appfilter",      name: "应用过滤",         icon: "🔍", desc: { zh: "应用层流量过滤",         en: "App traffic filter" } },
       { pkg: "luci-app-arpbind",    name: "IP/MAC 绑定",      icon: "🔗", desc: { zh: "IP 与 MAC 地址绑定",     en: "IP/MAC binding" } },
@@ -418,7 +418,7 @@ const PLUGIN_CATEGORIES = [
     plugins: [
       { pkg: "luci-app-leigod-acc", warn: true,     name: "雷神加速器",       icon: "⚡", desc: { zh: "雷神游戏加速器",         en: "Leigod game accelerator" } },
       { pkg: "luci-app-qiyou-acc", warn: true,      name: "奇游联机宝",       icon: "🎮", desc: { zh: "奇游游戏加速",           en: "Qiyou game accelerator" } },
-      { pkg: "luci-app-UUGameAcc",  name: "UU 游戏加速",      icon: "🎮", desc: { zh: "网易 UU 游戏加速器",     en: "NetEase UU accelerator" } },
+      { pkg: "luci-app-UUGameAcc", warn: true, name: "UU 游戏加速",      icon: "🎮", desc: { zh: "网易 UU 游戏加速器",     en: "NetEase UU accelerator" } },
       { pkg: "luci-app-ps3netsrv",      name: "PS3 NET 服务器",   icon: "🎮", desc: { zh: "PS3 网络游戏服务",       en: "PS3 net server" } },
     ]
   },
@@ -427,7 +427,7 @@ const PLUGIN_CATEGORIES = [
     plugins: [
       { pkg: "luci-app-minidlna",              name: "miniDLNA",        icon: "📺", desc: { zh: "DLNA 媒体服务器",        en: "DLNA media server" } },
       { pkg: "luci-app-airplay2",              name: "AirPlay 2",       icon: "🎵", desc: { zh: "AirPlay 音频接收器",     en: "AirPlay 2 audio receiver" } },
-      { pkg: "luci-app-pchifidac",             name: "PCHiFi 数字转盘", icon: "🎵", desc: { zh: "PCHiFi 音频转盘遥控",    en: "PCHiFi DAC remote" } },
+      { pkg: "luci-app-pchifidac",  warn: true,          name: "PCHiFi 数字转盘", icon: "🎵", desc: { zh: "PCHiFi 音频转盘遥控",    en: "PCHiFi DAC remote" } },
       { pkg: "luci-app-unblockmusic",          name: "解锁网易云",      icon: "🎵", desc: { zh: "解锁网易云灰色歌曲",     en: "Unlock NetEase grey songs" } },
       { pkg: "luci-app-xunlei",  warn: true,  name: "迅雷快鸟",        icon: "⬇️", desc: { zh: "迅雷快鸟宽带加速",       en: "Xunlei bandwidth boost" } },
     ]
