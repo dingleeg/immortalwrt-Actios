@@ -134,20 +134,25 @@ jobs:
           CGO_ENABLED: 1
           CC: aarch64-linux-gnu-gcc
         run: |
-          sudo apt-get install -y gcc-aarch64-linux-gnu
-          sudo dpkg --add-architecture arm64
-          sudo sed -i 's/^deb /deb [arch=amd64] /' /etc/apt/sources.list 2>/dev/null || true
-          sudo bash -c 'echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" >> /etc/apt/sources.list'
-          sudo bash -c 'echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list'
-          sudo apt-get update -q
-          sudo apt-get install -y libusb-1.0-0-dev:arm64
-          PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig \
-          CGO_CFLAGS="$(pkg-config --cflags libusb-1.0 2>/dev/null || echo '-I/usr/include/libusb-1.0')" \
-          CGO_LDFLAGS="$(pkg-config --libs libusb-1.0 2>/dev/null || echo '-lusb-1.0')" \
-          go build \
-            -ldflags="-s -w -X main.Version=${{ github.event.inputs.version }}" \
-            -trimpath \
-            -o ../dist/linux_arm64/刷机工具 .
+          sudo apt-get install -y gcc-aarch64-linux-gnu libusb-1.0-0-dev
+          # 尝试安装 arm64 版 libusb，失败则跳过
+          sudo dpkg --add-architecture arm64 || true
+          sudo apt-get update -q || true
+          sudo apt-get install -y libusb-1.0-0-dev:arm64 2>/dev/null || true
+          # 找 arm64 的 libusb 头文件和库
+          INC=$(find /usr -name "libusb.h" 2>/dev/null | head -1 | xargs dirname || echo "/usr/include/libusb-1.0")
+          LIB=$(find /usr/lib/aarch64-linux-gnu -name "libusb-1.0.a" 2>/dev/null | head -1 || echo "")
+          echo "INC=$INC LIB=$LIB"
+          if [ -n "$LIB" ]; then
+            CGO_CFLAGS="-I${INC}" \
+            CGO_LDFLAGS="-L$(dirname $LIB) -Wl,-Bstatic -lusb-1.0 -Wl,-Bdynamic -ludev" \
+            go build \
+              -ldflags="-s -w -X main.Version=${{ github.event.inputs.version }}" \
+              -trimpath \
+              -o ../dist/linux_arm64/刷机工具 .
+          else
+            echo "arm64 libusb 未找到，跳过 arm64 编译"
+          fi
 
       - name: 打包发布包
         run: |
