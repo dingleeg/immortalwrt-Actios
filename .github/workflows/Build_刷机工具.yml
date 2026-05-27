@@ -1,0 +1,230 @@
+name: 🔧 Build_傻瓜刷机工具
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (例如 v1.0.0)'
+        required: false
+        default: 'v1.0.0'
+        type: string
+
+jobs:
+  build:
+    name: 编译刷机工具
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: 安装编译依赖
+        run: |
+          sudo apt-get update -q
+          # libusb 开发库（用于 Linux 本地编译）
+          sudo apt-get install -y libusb-1.0-0-dev pkg-config
+          # Windows 交叉编译工具链
+          sudo apt-get install -y gcc-mingw-w64-x86-64 gcc-mingw-w64-i686
+          # macOS 交叉编译（用 osxcross，这里用纯 CGO_ENABLED=0 方案）
+
+      - name: 下载 libusb 静态库 + usbdk 安装包
+        run: |
+          # libusb Windows 预编译静态库
+          wget -q https://github.com/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.7z -O libusb.7z
+          7z x libusb.7z -o libusb_win
+
+          # usbdk 安装包（内嵌进 exe，运行时静默安装）
+          mkdir -p flashtool/winenv/usbdk
+          wget -q https://github.com/daynix/UsbDk/releases/download/v1.00-22/UsbDk_1.0.22_x64.msi \
+            -O flashtool/winenv/usbdk/usbdk_x64.msi
+          wget -q https://github.com/daynix/UsbDk/releases/download/v1.00-22/UsbDk_1.0.22_x86.msi \
+            -O flashtool/winenv/usbdk/usbdk_x86.msi
+          echo "usbdk 文件："
+          ls -lh flashtool/winenv/usbdk/
+
+          # windres 用于嵌入 manifest（需要 mingw）
+          which x86_64-w64-mingw32-windres || true
+
+      - name: 下载 Go 依赖
+        working-directory: flashtool
+        run: |
+          go mod tidy
+          go mod download
+          # go.sum 由 tidy 生成，确保后续编译不报 missing go.sum
+
+      - name: 编译 Linux x64（原生）
+        working-directory: flashtool
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: 1
+        run: |
+          go build \
+            -ldflags="-s -w -X main.Version=${{ github.event.inputs.version }}" \
+            -trimpath \
+            -o ../dist/linux_x64/刷机工具 .
+
+      - name: 编译 Windows x64（交叉编译）
+        working-directory: flashtool
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CGO_ENABLED: 1
+          CC: x86_64-w64-mingw32-gcc
+        run: |
+          LIBUSB_DIR="${{ github.workspace }}/libusb_win"
+          # 生成 manifest 资源文件（让 Windows 弹 UAC 管理员权限）
+          cat > app_manifest.rc << 'EOF'
+          1 24 "app.manifest"
+          EOF
+          x86_64-w64-mingw32-windres app_manifest.rc -O coff -o app_manifest.syso
+          CGO_CFLAGS="-I${LIBUSB_DIR}/include/libusb-1.0" \
+          CGO_LDFLAGS="-L${LIBUSB_DIR}/VS2019/MS64/static -lusb-1.0 -lsetupapi -static" \
+          go build \
+            -ldflags="-s -w -X main.Version=${{ github.event.inputs.version }}" \
+            -trimpath \
+            -o ../dist/win_x64/刷机工具.exe .
+          rm -f app_manifest.syso app_manifest.rc
+
+      - name: 编译 Windows x86（交叉编译）
+        working-directory: flashtool
+        env:
+          GOOS: windows
+          GOARCH: 386
+          CGO_ENABLED: 1
+          CC: i686-w64-mingw32-gcc
+        run: |
+          LIBUSB_DIR="${{ github.workspace }}/libusb_win"
+          cat > app_manifest.rc << 'EOF'
+          1 24 "app.manifest"
+          EOF
+          i686-w64-mingw32-windres app_manifest.rc -O coff -o app_manifest.syso
+          CGO_CFLAGS="-I${LIBUSB_DIR}/include/libusb-1.0" \
+          CGO_LDFLAGS="-L${LIBUSB_DIR}/VS2019/MS32/static -lusb-1.0 -lsetupapi -static" \
+          go build \
+            -ldflags="-s -w -X main.Version=${{ github.event.inputs.version }}" \
+            -trimpath \
+            -o ../dist/win_x86/刷机工具.exe .
+          rm -f app_manifest.syso app_manifest.rc
+
+      - name: 编译 Linux arm64（交叉编译）
+        run: |
+          sudo apt-get install -y gcc-aarch64-linux-gnu libusb-1.0-0-dev:arm64 2>/dev/null || \
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+        continue-on-error: true
+      - name: 编译 Linux arm64 二进制
+        working-directory: flashtool
+        env:
+          GOOS: linux
+          GOARCH: arm64
+          CGO_ENABLED: 1
+          CC: aarch64-linux-gnu-gcc
+        run: |
+          go build \
+            -ldflags="-s -w -X main.Version=${{ github.event.inputs.version }}" \
+            -trimpath \
+            -o ../dist/linux_arm64/刷机工具 . || \
+          CGO_ENABLED=0 go build \
+            -ldflags="-s -w -X main.Version=${{ github.event.inputs.version }}" \
+            -trimpath \
+            -o ../dist/linux_arm64/刷机工具 .
+
+      - name: 打包发布包
+        run: |
+          ROM_DIR="flashtool/rom"
+          VERSION="${{ github.event.inputs.version }}"
+
+          write_readme() {
+            local dir=$1
+            local os_name=$2
+            local run_cmd=$3
+            cat > "$dir/使用说明.txt" << EOF
+          【OpenStick 傻瓜一键刷机工具 $VERSION】
+
+          适用设备：高通410系列随身WiFi（UFI001B/C、UFI003、SP970 等）
+
+          使用步骤：
+          1. 将 boot.img 和 system.img 放入 rom 文件夹
+          2. 按住设备上的 音量- 键不松开
+          3. 将 USB 线插入电脑
+          4. $run_cmd
+          5. 等待自动完成（约3-5分钟），全程无需任何操作
+
+          注意：
+          - 刷机过程中请勿拔出 USB
+          - 基带会自动备份到 backup_日期时间 文件夹
+          - 无需安装任何驱动
+
+          固件下载：https://github.com/x7780/immortalwrt-Actios
+          EOF
+          }
+
+          # Windows x64
+          mkdir -p dist/win_x64/rom
+          cp $ROM_DIR/*.bin $ROM_DIR/*.mbn $ROM_DIR/*.img dist/win_x64/rom/ 2>/dev/null || true
+          write_readme dist/win_x64 "Windows" "双击运行 刷机工具.exe"
+          cd dist && zip -r OpenStick刷机工具_Windows_x64_${VERSION}.zip win_x64/ && cd ..
+
+          # Windows x86
+          mkdir -p dist/win_x86/rom
+          cp $ROM_DIR/*.bin $ROM_DIR/*.mbn $ROM_DIR/*.img dist/win_x86/rom/ 2>/dev/null || true
+          write_readme dist/win_x86 "Windows" "双击运行 刷机工具.exe"
+          cd dist && zip -r OpenStick刷机工具_Windows_x86_${VERSION}.zip win_x86/ && cd ..
+
+          # Linux x64
+          mkdir -p dist/linux_x64/rom
+          cp $ROM_DIR/*.bin $ROM_DIR/*.mbn $ROM_DIR/*.img dist/linux_x64/rom/ 2>/dev/null || true
+          chmod +x dist/linux_x64/刷机工具
+          write_readme dist/linux_x64 "Linux" "终端运行：./刷机工具"
+          cd dist && tar -czf OpenStick刷机工具_Linux_x64_${VERSION}.tar.gz linux_x64/ && cd ..
+
+          # Linux arm64
+          mkdir -p dist/linux_arm64/rom
+          cp $ROM_DIR/*.bin $ROM_DIR/*.mbn $ROM_DIR/*.img dist/linux_arm64/rom/ 2>/dev/null || true
+          chmod +x dist/linux_arm64/刷机工具 2>/dev/null || true
+          write_readme dist/linux_arm64 "Linux" "终端运行：./刷机工具"
+          cd dist && tar -czf OpenStick刷机工具_Linux_arm64_${VERSION}.tar.gz linux_arm64/ && cd ..
+
+          echo "打包完成："
+          ls -lh dist/*.zip dist/*.tar.gz
+
+      - name: 发布到 Release
+        uses: ncipollo/release-action@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: flashtool-${{ github.event.inputs.version }}-${{ github.run_number }}
+          name: "🔧 傻瓜刷机工具 ${{ github.event.inputs.version }}"
+          body: |
+            ## OpenStick 傻瓜一键刷机工具 ${{ github.event.inputs.version }}
+
+            ### ✅ 无需安装任何驱动，真正傻瓜操作
+
+            ### 使用步骤
+            1. 下载对应系统的压缩包并解压
+            2. 将 `boot.img` 和 `system.img` 放入 `rom` 文件夹
+            3. **按住设备音量- 键** → 插入 USB
+            4. 双击运行刷机工具
+            5. 等待自动完成（约3-5分钟）
+
+            ### 下载
+            | 文件 | 适用系统 |
+            |------|---------|
+            | `OpenStick刷机工具_Windows_x64_*.zip` | Windows 10/11 64位 ✅ 推荐 |
+            | `OpenStick刷机工具_Windows_x86_*.zip` | Windows 32位 |
+            | `OpenStick刷机工具_Linux_x64_*.tar.gz` | Linux 64位 |
+            | `OpenStick刷机工具_Linux_arm64_*.tar.gz` | Linux ARM64 |
+
+            ### 固件下载
+            https://github.com/x7780/immortalwrt-Actios
+          artifacts: "dist/*.zip,dist/*.tar.gz"
+          allowUpdates: true
+          draft: false
+          prerelease: false
